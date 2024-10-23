@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  pgvector:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: langchain
+      POSTGRES_PASSWORD: langchain
+      POSTGRES_DB: langchain
+    volumes:
+      - ./data/pgvector:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ../..
+      dockerfile: docker/dev/backend.Dockerfile
+    command: poetry run python main.py
+    ports:
+      - "8000:8000"
+    environment:
+      POSTGRES_HOST: pgvector
+    volumes:
+      - ../../data:/app/data
+      - ../../src:/app/src
+      - ../../fetch.py:/app/fetch.py
+      - ../../fetch_and_ingest.py:/app/fetch_and_ingest.py
+      - ../../ingest.py:/app/ingest.py
+      - ../../main.py:/app/main.py
+      - ../../poetry.lock:/app/poetry.lock
+      - ../../pyproject.toml:/app/pyproject.toml
+    env_file:
+      - ../../.env
+    depends_on:
+      - pgvector
+
+  frontend:
+    build:
+      context: ../..
+      dockerfile: docker/dev/frontend.Dockerfile
+    command: npm run dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../web/public:/app/public
+      - ../../web/src:/app/src
+      - ../../web/eslint.config.js:/app/eslint.config.js
+      - ../../web/index.html:/app/index.html
+      - ../../web/package.json:/app/package.json
+      - ../../web/package-lock.json:/app/package-lock.json
+      - ../../web/vite.config.js:/app/vite.config.js
+      - frontend-home:/root/
+    env_file:
+      - ../../.env
+    environment:
+      VITE_BACKEND_URL: http://backend:8000
+#    depends_on:
+#      - backend
+
+volumes:
+  backend-home:
+  frontend-home:

@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "self-rag"
+version = "0.1.0"
+description = ""
+authors = ["Sylvain Cau <ashdevfr@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+langchain = "^0.3.4"
+langchain-core = "^0.3.12"
+langchain-ollama = "^0.2.0"
+langchain-community = "^0.3.3"
+python-dotenv = "^1.0.1"
+black = "^24.10.0"
+isort = "^5.13.2"
+langgraph = "^0.2.39"
+fastapi = "^0.115.3"
+uvicorn = "^0.32.0"
+duckduckgo-search = "^6.3.2"
+sqlalchemy = "^2.0.36"
+psycopg = {extras = ["binary"], version = "^3.2.3"}
+langchain-postgres = "^0.0.12"
+beautifulsoup4 = "^4.12.3"
+pydiscourse = "^1.7.0"
+python-gitlab = "^4.13.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
